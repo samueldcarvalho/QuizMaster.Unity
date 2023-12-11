@@ -1,10 +1,8 @@
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Threading;
 using System.Threading.Tasks;
 
 public class QuizManager : MonoBehaviour
@@ -27,6 +25,8 @@ public class QuizManager : MonoBehaviour
 
     public async Task OnAnswerSelected(int index)
     {
+        SetButtonsCanClickState(false);
+
         GameObject selectedButton = answerButtonGroup.transform.GetChild(index).gameObject;
         Image imageComponent = selectedButton.GetComponent<Image>();
 
@@ -64,11 +64,24 @@ public class QuizManager : MonoBehaviour
             imageComponent.color = defaultColorButton;
             textMeshProComponent.text = answer;
         }
+
+        SetButtonsCanClickState(true);
     }
 
     private void Clear()
     {
         foreach (Transform child in answerButtonGroup.transform)
             Destroy(child.gameObject);
+    }
+
+    private void SetButtonsCanClickState(bool canClick)
+    {
+        for (int i = 0; i < actualQuestion.GetAnswers().Length; i++)
+        {
+            var button = answerButtonGroup.transform.GetChild(i);
+            var buttonComponent = button.GetComponent<Button>();
+
+            buttonComponent.interactable = canClick;
+        }
     }
 }
