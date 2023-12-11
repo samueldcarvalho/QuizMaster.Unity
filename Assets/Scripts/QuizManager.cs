@@ -4,38 +4,68 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
+using System;
 
 public class QuizManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI questionText;
+    [SerializeField] private TextMeshProUGUI valueText;
     [SerializeField] private List<QuestionScriptableObject> questions;
     [SerializeField] private GameObject answerButtonGroup;
     [SerializeField] private GameObject answerButtonPrefab;
+    [SerializeField] private QuizTimer timer;
 
     [SerializeField] private Color defaultColorButton;
+    [SerializeField] private Color selectedColorButton;
     [SerializeField] private Color correctColorButton;
     [SerializeField] private Color incorrectColorButton;
 
+    public static event EventHandler<bool> OnSelectedOption;
+
     private QuestionScriptableObject actualQuestion;
+    private QuizScoreManager quizScoreManager;
+
+    private void Awake()
+    {
+        quizScoreManager = GetComponent<QuizScoreManager>();
+    }
 
     private void Start()
     {
         SetupQuestion(questions[0]);
     }
 
+    private void Update() =>
+        valueText.text = quizScoreManager.GetActualScore().ToString();
+
     public async Task OnAnswerSelected(int index)
     {
         SetButtonsCanClickState(false);
+        timer.SetPausedTimer(true);
 
         GameObject selectedButton = answerButtonGroup.transform.GetChild(index).gameObject;
         Image imageComponent = selectedButton.GetComponent<Image>();
 
+        imageComponent.color = selectedColorButton;
+
+        await Task.Delay((int)Mathf.Round(timer.GetDelayToShowCorrectAnswer()) * 1000);
+
         if (index == actualQuestion.GetCorrectAnswerIndex())
+        {
             imageComponent.color = correctColorButton;
+            OnSelectedOption(this, true);
+        }
         else
+        {
+            GameObject correctButton = answerButtonGroup.transform.GetChild(actualQuestion.GetCorrectAnswerIndex()).gameObject; 
+
+            correctButton.GetComponent<Image>().color = correctColorButton;
             imageComponent.color = incorrectColorButton;
 
-        await Task.Delay(millisecondsDelay: 1000);
+            OnSelectedOption(this, false);
+        }
+
+        await Task.Delay(2000);
 
         Clear();
         SetupQuestion(questions[questions.IndexOf(actualQuestion) + 1]);
@@ -66,6 +96,7 @@ public class QuizManager : MonoBehaviour
         }
 
         SetButtonsCanClickState(true);
+        timer.StartTimer();
     }
 
     private void Clear()
