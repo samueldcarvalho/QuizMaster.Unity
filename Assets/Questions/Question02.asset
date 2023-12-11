@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29ac8d40321b2904887943f9ce763197, type: 3}
+  m_Name: Question02
+  m_EditorClassIdentifier: 
+  question: "O que \xE9 um banco de dados?"
+  answers:
+  - "Um banco de dados \xE9 um armazenamento de informa\xE7\xF5es organizadas. Exemplo:
+    MySQL."
+  - "Um banco de dados \xE9 um tipo de linguagem de programa\xE7\xE3o. Exemplo: Java."
+  - "Um banco de dados \xE9 um navegador da web. Exemplo: Google Chrome."
+  - "Um banco de dados \xE9 um tipo de servidor web. Exemplo: Apache."
+  correctAnswerIndex: 0
